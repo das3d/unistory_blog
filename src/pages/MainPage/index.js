@@ -2,27 +2,26 @@ import React from "react";
 import Post from "../../components/Post";
 import s from "./MainPage.module.scss"
 import ModalPost from "../../components/ModalPost";
-import {connect} from "react-redux";
-import {selectPost, setPost} from "../../redux/postReducer";
+import {useSelector} from "react-redux";
+import {getPosts} from "../../selectors/postSelector";
 
-const MainPage = ({posts, setPost, selectPost}) => {
+
+const MainPage = () => {
     const [visibleModal, setVisibleModal] = React.useState(false)
+    const posts = useSelector((state)=>getPosts(state))
     return <div className={s.mainBlock}>
         <h1>Блог</h1>
         <ul className={s.posts}>
-            {posts && posts.map((post, index) => <li key={post.title + index}>
-                    <Post title={post.title} content={post.content} selectPost={selectPost}/>
+            {posts && posts.map((post) => <li key={post.title + post.id}>
+                    <Post title={post.title} id={post.id} content={post.content}/>
                 </li>
             )}
         </ul>
         <div>
             {!visibleModal && <button className={s.button} onClick={() => setVisibleModal(true)}>+Добавить</button>}
         </div>
-        {visibleModal && <ModalPost setPost={setPost} setVisible={setVisibleModal}/>}
+        {visibleModal && <ModalPost setVisible={setVisibleModal}/>}
 
     </div>
 }
-export default connect((state) => ({ //connecting to store
-    posts: state.postReducer.posts,
-    state: state.postReducer
-}), {setPost, selectPost})(MainPage)
+export default MainPage

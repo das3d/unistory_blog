@@ -10,29 +10,23 @@ const postReducer = (state = initState, action) => {
     switch (action.type) {
 
         case SET_POST: {
-            return {...state, posts: [...state.posts, action.payload]}
+            return {...state, posts: [...state.posts, {...action.payload, id:Math.random().toString(36).substr(2, 9)}]}
         }
         case DELETE_POST: {
+            state.posts.splice(state.posts.findIndex(post => post.id === action.payload), 1)
             return {
                 ...state,
-                posts: state.posts.filter((post) => post.title !== state.currentPost.title || post.content !== state.currentPost.content)
+                posts: [...state.posts]
 
             }
         }
         case EDIT_POST: {
-            let ind = state.posts.findIndex(post =>
-                action.payload.prevTitle === post.title && action.payload.prevContent === post.content)
-            return {...state, posts:state.posts.map((post,index)=>{
-                   if(ind === index){
-                       return {title: action.payload.title, content: action.payload.content}
-                   } return {...post}
-                    }
+            state.posts.splice(state.posts.findIndex(post => post.id === action.payload.id), 1, action.payload)
+            return {...state, posts: [...state.posts]
 
-                )}
+                }
         }
-        case SELECTED_POST: {
-            return {...state, currentPost: action.payload}
-        }
+
         default:
             return state
     }
@@ -42,8 +36,8 @@ const postReducer = (state = initState, action) => {
 export const setPost = (payload) => ({
     type: SET_POST, payload
 })
-export const deletePost = () => ({
-    type: DELETE_POST
+export const deletePost = (payload) => ({
+    type: DELETE_POST, payload
 })
 export const editPost = (payload) => ({
     type: EDIT_POST, payload

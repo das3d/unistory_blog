@@ -1,10 +1,12 @@
 import s from "./DeleteWindow.module.scss"
 import {Link} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {deletePost} from "../../redux/postReducer";
 
-const DeleteWindow = ({setOpenedWindow, deletePost}) => {
-
+const DeleteWindow = ({setOpenedWindow, id}) => {
+    const dispatch = useDispatch()
     const deletingPost = () => {
-        deletePost()
+        dispatch(deletePost(id))
         setOpenedWindow(false)//close modal window, when post was deleted
     }
 
